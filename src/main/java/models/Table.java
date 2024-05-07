@@ -1,5 +1,8 @@
 package models;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import others.TableStatus;
 
 public class Table implements Model{
@@ -35,7 +38,13 @@ public class Table implements Model{
 	public void setStatus(TableStatus status) {
 		this.status = status;
 	}
-
+	public static Table getFromResultSet(ResultSet rs) throws SQLException {
+        Table t = new Table();
+        t.setId(rs.getInt("id"));
+        t.setName(rs.getNString("name"));
+        t.setStatus(TableStatus.getById(rs.getNString("status")));
+        return t;
+    }
 	@Override
 	public String toStringvn() {
 		// TODO Auto-generated method stub

@@ -3,4 +3,15 @@
   <groupId>DACS</groupId>
   <artifactId>RestaurantManagementApp</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <dependencies>
+
+		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.30</version>
+		</dependency>
+
+
+  </dependencies>
 </project>

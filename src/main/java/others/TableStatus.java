@@ -1,5 +1,7 @@
 package others;
 
+
+
 public enum TableStatus {
 	FREE("free", "Trống"),
     SERVING("serving", "Đang phục vụ"),
@@ -26,5 +28,12 @@ public enum TableStatus {
     public void setName(String name) {
         this.name = name;
     }
-
+    public static TableStatus getById(String id) {
+        for (TableStatus e : values()) {
+            if (e.id.equals(id)) {
+                return e;
+            }
+        }
+        return FREE;
+    }
 }
