@@ -8,17 +8,59 @@ import others.EmployeePermission;
 
 public class Employee implements Model{
 
-	public int id;
-    public String username, password, name, phoneNumber;
-    public int permissionId;
-    public EmployeePermission permission;
-    public Date startDate;
-    public int salary;
+	
+
+	@Override
+	public String toString() {
+		return "Employee [id=" + id + ", username=" + username + ", password=" + password + ", name=" + name
+				+ ", phoneNumber=" + phoneNumber  + ", permissionId=" + permissionId
+				+ ", permission=" + permission + ", startDate=" + startDate ;
+	}
+
+	private int id,idRestaurant;
+    private String username, password, name, phoneNumber;
+    private int permissionId;
+    private EmployeePermission permission;
+    private Date startDate;
     
-    public Employee() {
+    
+    
+
+	public Employee(String username, String password) {
+		super();
+		this.username = username;
+		this.password = password;
+	}
+
+
+	public Employee(String username, String password, String name, String phoneNumber,
+			EmployeePermission permission) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.name = name;
+		this.phoneNumber = phoneNumber;
+		this.permission = permission;
+	}
+
+
+	public Employee() {
     }
 
-    public int getId() {
+	
+    
+
+	public int getIdRestaurant() {
+		return idRestaurant;
+	}
+
+
+	public void setIdRestaurant(int idRestaurant) {
+		this.idRestaurant = idRestaurant;
+	}
+
+
+	public int getId() {
         return id;
     }
 
@@ -74,15 +116,7 @@ public class Employee implements Model{
         this.permission = permission;
     }
 
-    public int getSalary() {
-        return salary;
-    }
-
-    public void setSalary(int salary) {
-        this.salary = Math.max(0, salary);
-    }
-
-	@Override
+   	@Override
 	public String toStringvn() {
 		// TODO Auto-generated method stub
 		return name;
@@ -99,7 +133,8 @@ public class Employee implements Model{
         e.setName(rs.getNString("name"));
         e.setPhoneNumber(rs.getNString("phoneNumber"));
         e.setStartDate(rs.getDate("startDate"));
-        e.setPermission(EmployeePermission.getById(rs.getNString("permissionID")));
+        e.setPermission(EmployeePermission.getByName(rs.getNString("permissionName")));
+        e.setIdRestaurant(rs.getInt("idRestaurant"));
 //        e.setSalary(rs.getInt("salary"));
         return e;
     }
@@ -109,7 +144,6 @@ public class Employee implements Model{
         return new Object[]{
             id, name, username, password,
             phoneNumber, startDate, permission.getName(),
-            salary
         };
     }
 	

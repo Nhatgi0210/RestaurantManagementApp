@@ -12,7 +12,7 @@ public enum EmployeePermission {
         this.name = name;
         this.priority = priority;
     }
-
+    
     public static EmployeePermission getById(String id) {
         for (EmployeePermission e : values()) {
             if (e.id.equals(id)) {

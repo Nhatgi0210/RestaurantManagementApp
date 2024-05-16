@@ -11,7 +11,7 @@ public interface DAOinterface <T> {
 
     public  T get(int id) throws SQLException;
 
-    public  void add(T t) throws SQLException;
+    public  int add(T t) throws SQLException;
 
     public  void update(T t) throws SQLException;
 
