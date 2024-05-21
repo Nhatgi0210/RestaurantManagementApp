@@ -2,38 +2,67 @@ package view;
 
 import java.awt.EventQueue;
 import java.awt.Image;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.ui.FlatRoundBorder;
+import com.google.gson.Gson;
 
+import DAO.EmployeeDAO;
+import DAO.RestaurenDAO;
+import mainPanel.AreaManagerPanel;
+import mainPanel.EmployeeManagerPanel;
+import mainPanel.ProductPanel;
+import mainPanel.ProfilePanel;
+import mainPanel.StatisticPanel;
 import models.Employee;
-import net.miginfocom.examples.TestMigLayout;
+import models.Restaurant;
+
 import net.miginfocom.swing.MigLayout;
 
 import java.awt.Color;
+import java.awt.Dialog;
 import java.awt.Font;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import javax.swing.SpringLayout;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.CardLayout;
 
 public class HomeView extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-
+	private Employee employee;
+	private Socket socket;
+	private Restaurant restaurant;
+	private ProfilePanel profilePanel;
+	private AreaManagerPanel areaManagerPanel;
+	private ProductPanel productPanel;
+	private StatisticPanel statisticPanel;
+	private EmployeeManagerPanel employeeManagerPanel;
+	private JButton buttonSelected;
 	/**
 	 * Launch the application.
 	 */
@@ -41,7 +70,6 @@ public class HomeView extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					UIManager.setLookAndFeel(new FlatLightLaf());
 					
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -52,8 +80,32 @@ public class HomeView extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * @throws SQLException 
 	 */
-	public HomeView(Employee employee, Socket socket) {
+	public HomeView(Employee employee, Socket socket)  {
+		try {
+			UIManager.setLookAndFeel(new FlatLightLaf());
+		} catch (UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		UIManager.put("ComboBox.buttonBackground", Color.decode("#FDED8F"));
+		UIManager.put("TableHeader.font",new Font("Tahoma", Font.BOLD, 15));
+		UIManager.put("TableHeader.height", 40);
+		UIManager.put("Table.selectionBackground", Color.decode("#FDED8F"));
+		UIManager.put("Table.selectionForeground", Color.black);
+		
+		this.employee = employee;
+		this.socket = socket;
+		this.restaurant = getRestaurantByID(employee.getIdRestaurant());
+		
+//		try {
+//			restaurant = RestaurenDAO.getDao().get(employee.getIdRestaurant());
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1300,730);
 		contentPane = new JPanel();
@@ -61,6 +113,12 @@ public class HomeView extends JFrame {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+		CardLayout cardLayout = new CardLayout();
+		JPanel mainPanel = new JPanel();
+		mainPanel.setBounds(211, 104, 1073, 587);
+		mainPanel.setLayout(cardLayout);
+		
 		
 		JPanel SideMenuPanel = new JPanel();
 		SideMenuPanel.setBackground(Color.decode("#0F433D"));
@@ -77,16 +135,36 @@ public class HomeView extends JFrame {
 		SideMenuPanel.add(Logo);
 		
 		JButton statisticButton = new JButton("Thống Kê");
+		buttonSelected = statisticButton;
+		statisticButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				buttonSelected.setBackground(new Color(15, 67, 61));
+				buttonSelected = statisticButton;
+				buttonSelected.setBackground(Color.decode("#145DA0"));
+				cardLayout.show(mainPanel, "statistic");
+				
+			}
+		});
+		
 		statisticButton.setHorizontalAlignment(SwingConstants.LEFT);
 		statisticButton.setFont(new Font("Tahoma", Font.BOLD, 15));
 		statisticButton.setForeground(Color.WHITE);
 		statisticButton.setBounds(0, 199, 211, 52);
-		statisticButton.setBackground(Color.decode("#0F433D"));
+		statisticButton.setBackground(Color.decode("#145DA0"));
 		statisticButton.setBorderPainted(false);
 		statisticButton.setIcon(new FlatSVGIcon("svg/statistic.svg"));
 		SideMenuPanel.add(statisticButton);
 		
 		JButton employeeManagerButton = new JButton("Quản Lý Nhân Sự");
+		employeeManagerButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				buttonSelected.setBackground(new Color(15, 67, 61));
+				buttonSelected = employeeManagerButton;
+				buttonSelected.setBackground(Color.decode("#145DA0"));
+				cardLayout.show(mainPanel, "employee");
+				employeeManagerPanel.getAll();
+			}
+		});
 		employeeManagerButton.setHorizontalAlignment(SwingConstants.LEFT);
 		employeeManagerButton.setForeground(Color.WHITE);
 		employeeManagerButton.setFont(new Font("Tahoma", Font.BOLD, 15));
@@ -97,6 +175,14 @@ public class HomeView extends JFrame {
 		SideMenuPanel.add(employeeManagerButton);
 		
 		JButton productButton = new JButton("Sản Phẩm");
+		productButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				buttonSelected.setBackground(new Color(15, 67, 61));
+				buttonSelected = productButton;
+				buttonSelected.setBackground(Color.decode("#145DA0"));
+				cardLayout.show(mainPanel, "product");
+			}
+		});
 		productButton.setHorizontalAlignment(SwingConstants.LEFT);
 		productButton.setForeground(Color.WHITE);
 		productButton.setFont(new Font("Tahoma", Font.BOLD, 15));
@@ -107,6 +193,14 @@ public class HomeView extends JFrame {
 		SideMenuPanel.add(productButton);
 		
 		JButton areaManagerButton = new JButton("Khu Vực");
+		areaManagerButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				buttonSelected.setBackground(new Color(15, 67, 61));
+				buttonSelected = areaManagerButton;
+				buttonSelected.setBackground(Color.decode("#145DA0"));
+				cardLayout.show(mainPanel, "area");
+			}
+		});
 		areaManagerButton.setHorizontalAlignment(SwingConstants.LEFT);
 		areaManagerButton.setForeground(Color.WHITE);
 		areaManagerButton.setFont(new Font("Tahoma", Font.BOLD, 15));
@@ -121,6 +215,14 @@ public class HomeView extends JFrame {
 		SideMenuPanel.add(separator);
 		
 		JButton profileButton = new JButton("Profile");
+		profileButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				buttonSelected.setBackground(new Color(15, 67, 61));
+				buttonSelected = profileButton;
+				buttonSelected.setBackground(Color.decode("#145DA0"));
+				cardLayout.show(mainPanel, "profile");
+			}
+		});
 		profileButton.setHorizontalAlignment(SwingConstants.LEFT);
 		profileButton.setForeground(Color.WHITE);
 		profileButton.setFont(new Font("Tahoma", Font.BOLD, 15));
@@ -141,6 +243,10 @@ public class HomeView extends JFrame {
 		SideMenuPanel.add(settingButton);
 		
 		JButton logoutButton = new JButton("Đăng xuất");
+		logoutButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		logoutButton.setHorizontalAlignment(SwingConstants.LEFT);
 		logoutButton.setForeground(Color.WHITE);
 		logoutButton.setFont(new Font("Tahoma", Font.BOLD, 15));
@@ -167,17 +273,19 @@ public class HomeView extends JFrame {
 		lblNewLabel.setBounds(28, 11, 269, 14);
 		panel_1.add(lblNewLabel);
 		
-		JLabel lblNhHngAbc = new JLabel("Nhà Hàng Thiên Đường Quán");
-		lblNhHngAbc.setForeground(Color.WHITE);
-		lblNhHngAbc.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblNhHngAbc.setBounds(28, 30, 641, 31);
-		panel_1.add(lblNhHngAbc);
+		JLabel restaurenNamelb = new JLabel();
+		restaurenNamelb.setText(restaurant.getName());
+		restaurenNamelb.setForeground(Color.WHITE);
+		restaurenNamelb.setFont(new Font("Tahoma", Font.BOLD, 20));
+		restaurenNamelb.setBounds(28, 30, 641, 31);
+		panel_1.add(restaurenNamelb);
 		
-		JLabel lblaCh = new JLabel("Địa Chỉ: 793 Trần Hưng Đạo, Điện Ngọc, Điện Bàn, Quảng Nam");
-		lblaCh.setForeground(Color.WHITE);
-		lblaCh.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblaCh.setBounds(28, 69, 641, 14);
-		panel_1.add(lblaCh);
+		JLabel addresslb = new JLabel();
+		addresslb.setText(restaurant.getAddress());
+		addresslb.setForeground(Color.WHITE);
+		addresslb.setFont(new Font("Tahoma", Font.BOLD, 13));
+		addresslb.setBounds(28, 69, 641, 14);
+		panel_1.add(addresslb);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBounds(679, 0, 393, 105);
@@ -197,7 +305,7 @@ public class HomeView extends JFrame {
 		panel_3.putClientProperty("arc", 400);
 		
 		JLabel lblNewLabel_1 = new JLabel();
-		lblNewLabel_1.setText(employee.getName());
+		lblNewLabel_1.setText(this.employee.getName());
 		lblNewLabel_1.setIcon(new FlatSVGIcon("svg/accountblack.svg"));
 		panel_3.add(lblNewLabel_1);
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 15));
@@ -206,24 +314,60 @@ public class HomeView extends JFrame {
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		
 		JLabel lblNewLabel_2_1 = new JLabel();
-		lblNewLabel_2_1.setText(employee.getPermission() .getName());
+		lblNewLabel_2_1.setText(this.employee.getPermission() .getName());
 		lblNewLabel_2_1.setHorizontalAlignment(SwingConstants.RIGHT);
 //		lblNewLabel_2_1.setForeground(Color.WHITE);
 		lblNewLabel_2_1.setFont(new Font("Tahoma", Font.BOLD, 12));
 		panel_3.add(lblNewLabel_2_1);
 		
-//		
-//		JLabel statisticButton = new JLabel("Thống Kê");
-//		SideMenuPanel.add(statisticButton);
-//		
-//		JLabel employeeManagerButton = new JLabel("Quản Lý Nhân Sự");
-//		SideMenuPanel.add(employeeManagerButton);
-//		
-//		JLabel productButton = new JLabel("Sản Phẩm");
-//		SideMenuPanel.add(productButton);
-//		
-//		JLabel areaManagerButton = new JLabel("Quản Lý Khu Vực");
-//		SideMenuPanel.add(areaManagerButton);
+		
 		setVisible(true);
+		if(restaurant.getId() == 1 || restaurant == null) {
+			Dialog restaurantDialog = new CreateRestaurantDialog(this, restaurant,this.socket);
+			this.employee.setIdRestaurant(restaurant.getId());
+			setIdRestaurant(this.employee.getId(), restaurant.getId());
+			System.out.println(this.employee.getId());
+			restaurenNamelb.setText(restaurant.getName());
+			addresslb.setText(restaurant.getAddress());
+		}
+		statisticPanel = new StatisticPanel();
+		mainPanel.add(statisticPanel,"statistic");
+		employeeManagerPanel = new EmployeeManagerPanel(this.socket, this, restaurant, this.employee);
+		mainPanel.add(employeeManagerPanel,"employee");
+		productPanel = new ProductPanel();
+		mainPanel.add(productPanel,"product");
+		areaManagerPanel = new AreaManagerPanel();
+		mainPanel.add(areaManagerPanel,"area");
+		profilePanel = new ProfilePanel();
+		mainPanel.add(profilePanel,"profile");
+		contentPane.add(mainPanel);
+		
+	}
+	public Restaurant getRestaurantByID(int id) {
+		String[] controltemp = {"getRestaurantById", Integer.toString(id)};
+		Gson gson = new Gson();
+		try {
+			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+			out.writeObject(controltemp);
+			String restauranJSon = in.readLine();
+			Restaurant restaurant = gson.fromJson(restauranJSon, Restaurant.class);
+			return restaurant;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public void setIdRestaurant(int idEmployee, int idRestaurant) {
+		String[] controlTemp = {"setIdRestaurantForEmployee",Integer.toString(idEmployee), Integer.toString(idRestaurant)};
+		try {
+			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+			out.writeObject(controlTemp);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

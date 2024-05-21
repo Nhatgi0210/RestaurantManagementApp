@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import java.awt.event.MouseMotionAdapter;
 
 public class SignupFrame extends JFrame {
 
@@ -42,7 +43,7 @@ public class SignupFrame extends JFrame {
 	public SignupFrame(Socket socket) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1024,620);
-		
+		setLocationRelativeTo(null);
 //		setIconImage(new ImageIcon(getClass().getResource("/image/LogoBlack.png")).getImage());
 		
 		contentPane = new JPanel();
@@ -98,9 +99,12 @@ public class SignupFrame extends JFrame {
 		lblNewLabel_1_1_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				dispose();
+				new LoginFrame(socket);
+				
 			}
 		});
-		lblNewLabel_1_1_2.setForeground(Color.decode("#0CC0DF"));
+		lblNewLabel_1_1_2.setForeground(Color.black);
 		lblNewLabel_1_1_2.setFont(new Font("Tahoma", Font.PLAIN, 21));
 		lblNewLabel_1_1_2.setBounds(305, 394, 167, 22);
 		lblNewLabel_1_1_2.setCursor(Cursor.getPredefinedCursor(HAND_CURSOR));
@@ -109,7 +113,7 @@ public class SignupFrame extends JFrame {
 		JLabel labelBackground = new JLabel("");
 		labelBackground.setBounds(0, 0, 1008, 581);
 		
-		ImageIcon ii = new ImageIcon(getClass().getResource("/image/BackgroundLogin.png"));
+		ImageIcon ii = new ImageIcon(getClass().getResource("/image/BackgroundSignup.png"));
 		Image i = ii.getImage().getScaledInstance(1024, 620, Image.SCALE_SMOOTH);
 		
 		labelBackground.setIcon(new ImageIcon(i));

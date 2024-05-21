@@ -1,16 +1,17 @@
 package others;
 
 public enum EmployeePermission {
-    MANAGER("manager", "Quản lý", 2),
-    STAFF("staff", "Nhân viên", 1),
-    INACTIVE("inactive", "Nghỉ việc", 0);
+    MANAGER("manager", "Quản Lý"),
+    CASHIER("cashier","Thu Ngân"),
+    ORDER("order","Order"),
+    CHEF("chef","Đầu Bếp");
     private String id, name;
-    private int priority;
+  
 
-    EmployeePermission(String id, String name, int priority) {
+    EmployeePermission(String id, String name) {
         this.id = id;
         this.name = name;
-        this.priority = priority;
+        
     }
     
     public static EmployeePermission getById(String id) {
@@ -19,7 +20,8 @@ public enum EmployeePermission {
                 return e;
             }
         }
-        return STAFF;
+		return null;
+       
     }
 
     public static EmployeePermission getByName(String name) {
@@ -28,7 +30,7 @@ public enum EmployeePermission {
                 return e;
             }
         }
-        return STAFF;
+        return null;
     }
 
     public String getId() {
@@ -39,9 +41,7 @@ public enum EmployeePermission {
         return name;
     }
 
-    public int compare(EmployeePermission other) {
-        return priority - other.priority;
-    }
+    
 
 }
 

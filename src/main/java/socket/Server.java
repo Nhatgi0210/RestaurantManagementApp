@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import controller.ServerController;
+
 public class Server {
 		public Server() throws IOException, ClassNotFoundException {
 			ServerSocket server = new ServerSocket(1234);

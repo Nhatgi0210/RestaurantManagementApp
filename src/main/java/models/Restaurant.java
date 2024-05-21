@@ -1,10 +1,20 @@
 package models;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class Restaurant {
 	private int id;
 	private String name, address;
 	public Restaurant() {
 	}
+	
+	public Restaurant(String name, String address) {
+		super();
+		this.name = name;
+		this.address = address;
+	}
+
 	public Restaurant(int id, String name, String address) {
 		super();
 		this.id = id;
@@ -30,5 +40,22 @@ public class Restaurant {
 		this.address = address;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "Restaurant [id=" + id + ", name=" + name + ", address=" + address + "]";
+	}
+	public static Restaurant getFromResultSet(ResultSet rs) {
+		Restaurant restaurant = new Restaurant();
+		try {
+			restaurant.setId(rs.getInt("id"));
+			restaurant.setName(rs.getNString("name"));
+			restaurant.setAddress(rs.getNString("address"));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return restaurant;
+		
+	}
 }

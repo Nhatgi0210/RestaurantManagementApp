@@ -12,6 +12,7 @@ import com.formdev.flatlaf.extras.components.FlatPasswordField;
 import com.formdev.flatlaf.extras.components.FlatTextField;
 import com.formdev.flatlaf.intellijthemes.FlatLightFlatIJTheme;
 import com.google.gson.Gson;
+import com.mysql.cj.x.protobuf.MysqlxNotice.Frame;
 
 import models.Employee;
 import others.MaHoa;
@@ -51,8 +52,8 @@ public class LoginPanel extends JPanel {
 	 * Create the panel.
 	 */
 
-	public LoginPanel(Socket socket) {
-
+	public LoginPanel(Socket socket,LoginFrame loginFrame) {
+		UIManager.put("PasswordField.showRevealButton", true);
 		setLayout(null);
 		setBounds(new Rectangle(415, 338));
 
@@ -80,12 +81,15 @@ public class LoginPanel extends JPanel {
 		usernameTextField.setFont(new Font("Tahoma", Font.BOLD, 13));
 		usernameTextField.setBounds(53, 123, 306, 42);
 //		textField.setBackground(rgba);
+		
 		add(usernameTextField);
 		usernameTextField.setColumns(10);
 
+		FlatButton a = new FlatButton();
 		passwordField = new FlatPasswordField();
 		passwordField.setFont(new Font("Tahoma", Font.BOLD, 13));
 		passwordField.setBounds(53, 199, 306, 42);
+	
 //		passwordField.setBackground(new Color(255,255,255,75));
 		add(passwordField);
 
@@ -112,6 +116,7 @@ public class LoginPanel extends JPanel {
 					}
 					else {
 						Employee employeeResult = gson.fromJson(stringEmployeeResult, Employee.class);
+						loginFrame.dispose();
 						new HomeView(employeeResult,socket);
 					}
 				} catch (IOException e1) {

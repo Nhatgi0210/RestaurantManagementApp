@@ -10,6 +10,12 @@ import javax.swing.border.EmptyBorder;
 
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.extras.components.FlatButton;
+import com.formdev.flatlaf.ui.FlatPanelUI;
+import com.google.gson.Gson;
+
+import models.Employee;
+import others.MaHoa;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,10 +24,19 @@ import java.awt.FlowLayout;
 import java.awt.Image;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JSeparator;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class LoginFrame extends JFrame {
@@ -44,6 +59,7 @@ public class LoginFrame extends JFrame {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				
 			}
 		});
 	}
@@ -54,15 +70,18 @@ public class LoginFrame extends JFrame {
 	public LoginFrame(Socket socket) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1024,620);
-		
+		setLocationRelativeTo(null);
 //		setIconImage(new ImageIcon(getClass().getResource("/image/LogoBlack.png")).getImage());
 		
 		contentPane = new JPanel();
 		contentPane.setLayout(null);
 		
-		LoginPanel loginPanel = new LoginPanel(socket);
+		LoginPanel loginPanel = new LoginPanel(socket, this);
 		loginPanel.setBackground(new Color(255,255,255,50));
 		loginPanel.setBounds(525,121,415,338);
+		
+		
+		
 		contentPane.add(loginPanel);
 		setContentPane(contentPane);
 		
@@ -109,6 +128,9 @@ public class LoginFrame extends JFrame {
 		lblNewLabel_1_1_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				dispose();
+				new SignupFrame(socket);
+				
 			}
 		});
 		lblNewLabel_1_1_2.setForeground(Color.decode("#0CC0DF"));
@@ -128,3 +150,4 @@ public class LoginFrame extends JFrame {
 		setVisible(true);
 	}
 }
+
