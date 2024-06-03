@@ -54,10 +54,7 @@ public class Customer implements Model {
         this.birthday = birthday;
     }
 
-    @Override
-    public String toStringvn() {
-        return name + "\nSDT: " + phoneNumber + "\nĐC: " + address;
-    }
+    
 
     public static Customer getFromResultSet(ResultSet rs) throws SQLException {
         Customer c = new Customer();

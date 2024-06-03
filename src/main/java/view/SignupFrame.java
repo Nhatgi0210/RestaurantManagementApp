@@ -14,13 +14,15 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import controller.ClientController;
+
 import java.awt.event.MouseMotionAdapter;
 
 public class SignupFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-
 	/**
 	 * Launch the application.
 	 */
@@ -40,7 +42,7 @@ public class SignupFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public SignupFrame(Socket socket) {
+	public SignupFrame(ClientController clientController) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1024,620);
 		setLocationRelativeTo(null);
@@ -49,7 +51,7 @@ public class SignupFrame extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setLayout(null);
 		
-		SignupPanel signupPanel = new SignupPanel(socket);
+		SignupPanel signupPanel = new SignupPanel(clientController);
 		signupPanel.setBackground(new Color(255,255,255,50));
 		signupPanel.setBounds(525,50,415,500);
 		
@@ -100,7 +102,7 @@ public class SignupFrame extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				dispose();
-				new LoginFrame(socket);
+				new LoginFrame(clientController);
 				
 			}
 		});

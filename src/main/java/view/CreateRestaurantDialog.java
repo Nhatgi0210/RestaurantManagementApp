@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 import com.google.gson.Gson;
 
 import DAO.RestaurenDAO;
+import controller.ClientController;
 import models.Restaurant;
 
 import java.awt.Color;
@@ -38,7 +39,7 @@ public class CreateRestaurantDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private HomeView homeView;
 	private Restaurant restaurant;
-	private Socket socket;
+	private ClientController clientController;
 	/**
 	 * Launch the application.
 	 */
@@ -55,10 +56,10 @@ public class CreateRestaurantDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public CreateRestaurantDialog(HomeView homeView, Restaurant restaurant, Socket socket) {
+	public CreateRestaurantDialog(HomeView homeView, Restaurant restaurant,ClientController clientController) {
 		this.homeView = homeView;
 		this.restaurant = restaurant;
-		this.socket = socket;
+		this.clientController = clientController;
 		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		
 		setBounds(100, 100, 450, 300);
@@ -142,20 +143,11 @@ public class CreateRestaurantDialog extends JDialog {
 		
 	}
 	public int addRestaurant(String name, String address) {
-		try {
-			DataInputStream in = new DataInputStream(socket.getInputStream());
-			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+		
 			String[] control = {"addRestaurantAndGetId", name,address};
-			out.writeObject(control);
-			return in.readInt();
-		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		return 0;
+			String id = clientController.sendRequest(control);
+	
+			return Integer.parseInt(id);
 	}
 	
 }

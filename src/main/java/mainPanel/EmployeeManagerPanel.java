@@ -26,6 +26,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.JSeparator;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dialog;
 
 import javax.swing.JComboBox;
@@ -44,6 +45,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
+import controller.ClientController;
 import custemceltable.TableActionCellEditor;
 import custemceltable.TableActionCellRender;
 import custemceltable.TableActionEvent;
@@ -58,26 +60,25 @@ public class EmployeeManagerPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JTextField searchTextField;
 	private JTable table;
-	private Socket socket;
 	private HomeView homeview;
 	private Restaurant restaurant;
 	private Employee employee;
 	private ArrayList<Employee> employees;
-	private BufferedReader in;
-	private ObjectOutputStream out;
 	private DefaultTableModel model;
 	private Vector vData = new Vector();
 	private Vector vHeader = new Vector();
 	private JTextField textField_1;
+	private ClientController clientController;
 
 	/**
 	 * Create the panel.
 	 */
-	public EmployeeManagerPanel(Socket socket, HomeView homeView, Restaurant restaurant, Employee employee) {
-		this.socket = socket;
+	public EmployeeManagerPanel(ClientController clientController,HomeView homeView, Restaurant restaurant, Employee employee) {
+
 		this.homeview = homeView;
 		this.restaurant = restaurant;
 		this.employee = employee;
+		this.clientController = clientController;
 		setBackground(Color.WHITE);
 		setBounds(new Rectangle(1073, 587));
 		setLayout(null);
@@ -138,21 +139,22 @@ public class EmployeeManagerPanel extends JPanel {
 		btnNewButton.setBackground(Color.decode("#0F433D"));
 		btnNewButton.setBounds(880, 57, 180, 32);
 		btnNewButton.setIcon(new FlatSVGIcon("svg/add.svg"));
+		btnNewButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		btnNewButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 
-				Dialog addemployee = new addEmployee(getView(), EmployeeManagerPanel.this.restaurant.getId(),
-						EmployeeManagerPanel.this.socket);
+				Dialog addemployee = new addEmployeeDialog(getView(), EmployeeManagerPanel.this.restaurant.getId(),
+						EmployeeManagerPanel.this.clientController);
 
 			}
 		});
 		add(btnNewButton);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(20, 111, 1028, 493);
+		scrollPane.setBounds(20, 111, 1028, 454);
 		add(scrollPane);
 
 		String[] Title = new String[] { "Tên Nhân Viên", "SĐT", "Chức Vụ", "Ngày Vào Làm", "Username", "" };
@@ -186,7 +188,8 @@ public class EmployeeManagerPanel extends JPanel {
 
 			@Override
 			public void onEdit(int row) {
-
+				Employee employeeEdit = employees.get(row);
+				Dialog editEmployee = new editEmployeeDialog(getView(), employeeEdit, EmployeeManagerPanel.this.clientController);
 			}
 
 			@Override
@@ -198,16 +201,8 @@ public class EmployeeManagerPanel extends JPanel {
 					int option = JOptionPane.showConfirmDialog(null, "Bạn có chắc muốn cho nhân viên này nghỉ việc không?","Xác nhận xóa", JOptionPane.YES_NO_OPTION);
 					if(option == JOptionPane.YES_OPTION) {
 						String[] control = { "deleteByUsername", employeeUsername };
-
-					try {
-						out = new ObjectOutputStream(socket.getOutputStream());
-						in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-						out.writeObject(control);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					getAll();
+						clientController.sendRequest(control);
+						getAll();
 					}
 					
 				}
@@ -235,56 +230,36 @@ public class EmployeeManagerPanel extends JPanel {
 	}
 
 	public void getAll() {
-		try {
-
+		
 			Gson gson = new Gson();
-			out = new ObjectOutputStream(socket.getOutputStream());
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
 			String[] control = { "getAllEmployee", Integer.toString(restaurant.getId()) };
-			out.writeObject(control);
-			employees = gson.fromJson(in.readLine(), new TypeToken<ArrayList<Employee>>() {
+			String employeeJson = clientController.sendRequest(control);
+			employees = gson.fromJson(employeeJson, new TypeToken<ArrayList<Employee>>() {
 			}.getType());
 			loadTable();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 
 	}
 
 	public void filter(String posision) {
-		try {
-
 			Gson gson = new Gson();
-			out = new ObjectOutputStream(socket.getOutputStream());
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
 			String[] control = { "getEmployeeByPos", Integer.toString(restaurant.getId()), posision };
-			out.writeObject(control);
-			employees = gson.fromJson(in.readLine(), new TypeToken<ArrayList<Employee>>() {
+			String employeesJson = clientController.sendRequest(control);
+			employees = gson.fromJson(employeesJson, new TypeToken<ArrayList<Employee>>() {
 			}.getType());
 			loadTable();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 	}
 
 	public void search(String keyword) {
-		try {
-
+	
 			Gson gson = new Gson();
-			out = new ObjectOutputStream(socket.getOutputStream());
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
 			String[] control = { "getEmployeeByWord", Integer.toString(restaurant.getId()), keyword };
-			out.writeObject(control);
-			employees = gson.fromJson(in.readLine(), new TypeToken<ArrayList<Employee>>() {
+			String employeesJson = clientController.sendRequest(control);
+			employees = gson.fromJson(employeesJson, new TypeToken<ArrayList<Employee>>() {
 			}.getType());
 			loadTable();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		
 	}
 
 	public EmployeeManagerPanel getView() {

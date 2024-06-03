@@ -14,6 +14,7 @@ import com.formdev.flatlaf.intellijthemes.FlatLightFlatIJTheme;
 import com.google.gson.Gson;
 import com.mysql.cj.x.protobuf.MysqlxNotice.Frame;
 
+import controller.ClientController;
 import models.Employee;
 import others.MaHoa;
 
@@ -38,6 +39,7 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.awt.event.ActionEvent;
@@ -52,7 +54,7 @@ public class LoginPanel extends JPanel {
 	 * Create the panel.
 	 */
 
-	public LoginPanel(Socket socket,LoginFrame loginFrame) {
+	public LoginPanel(LoginFrame loginFrame, ClientController clientController) {
 		UIManager.put("PasswordField.showRevealButton", true);
 		setLayout(null);
 		setBounds(new Rectangle(415, 338));
@@ -102,26 +104,16 @@ public class LoginPanel extends JPanel {
 				Gson gson = new Gson();
 				String employeegson = gson.toJson(employee);
 				String[] control = { "login", employeegson };
-				try {
-					ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-//					DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-//					DataInputStream in = new DataInputStream(socket.getInputStream());
-					BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-					out.writeObject(control);
-					String stringEmployeeResult = in.readLine();
-					if (stringEmployeeResult.equals("0")) {
+				String stringEmployeeResult = clientController.sendRequest(control);
+				if (stringEmployeeResult.equals("0")) {
 
-						JOptionPane.showMessageDialog(btnNewButton, "Sai tên tài khoản hoặc mật khẩu!");
+					JOptionPane.showMessageDialog(btnNewButton, "Sai tên tài khoản hoặc mật khẩu!");
 
-					}
-					else {
-						Employee employeeResult = gson.fromJson(stringEmployeeResult, Employee.class);
-						loginFrame.dispose();
-						new HomeView(employeeResult,socket);
-					}
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				}
+				else {
+					Employee employeeResult = gson.fromJson(stringEmployeeResult, Employee.class);
+					loginFrame.dispose();
+					new HomeView(employeeResult,clientController);
 				}
 
 			}

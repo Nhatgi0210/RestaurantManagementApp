@@ -37,7 +37,7 @@ public class RestaurenDAO implements DAOinterface<Restaurant> {
 	}
 
 	@Override
-	public ArrayList<Restaurant> getAll() throws SQLException {
+	public ArrayList<Restaurant> getAll(int id) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -81,7 +81,7 @@ public class RestaurenDAO implements DAOinterface<Restaurant> {
 
 	@Override
 	public void update(Restaurant t) throws SQLException {
-	       String query = 
+//	       String query = 
 	}
 
 	@Override

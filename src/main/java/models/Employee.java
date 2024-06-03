@@ -116,11 +116,7 @@ public class Employee implements Model{
         this.permission = permission;
     }
 
-   	@Override
-	public String toStringvn() {
-		// TODO Auto-generated method stub
-		return name;
-	}
+   	
 	public boolean checkPassword(String password) {
         return this.password.equals(password);
     }

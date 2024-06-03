@@ -6,38 +6,71 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import models.Employee;
 import models.FoodItem;
 
 public class FoodItemDAO implements DAOinterface<FoodItem> {
+	public static FoodItemDAO getDAO() {
+		return new FoodItemDAO();
+	}
 
 	@Override
-	public ArrayList<FoodItem> getAll() throws SQLException {
+	public ArrayList<FoodItem> getAll(int idRestaurant) {
 		ArrayList<FoodItem> foodItems = new ArrayList<>();
-        Statement statement = conn.createStatement();
-        String query = "SELECT * FROM `food_item` ORDER BY `food_item`.`idCategory` ASC , `food_item`.`name` ASC";
-        ResultSet rs = statement.executeQuery(query);
-        while (rs.next()) {
-            FoodItem foodItem = FoodItem.getFromResultSet(rs);
-            foodItems.add(foodItem);
-        }
+        try {
+			String query = "SELECT fi.*, fc.name AS categoryName FROM food_item fi JOIN food_category fc ON fi.idCategory = fc.id WHERE fc.idRestaurant = ? ORDER BY fi.idCategory ASC, fi.name ASC";
+			PreparedStatement statement = conn.prepareStatement(query);
+			statement.setInt(1, idRestaurant);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+			    FoodItem foodItem = FoodItem.getFromResultSet(rs);
+			    foodItems.add(foodItem);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         return foodItems;
 
 	}
 
-	public ArrayList<FoodItem> getByIdCategory(int id) throws SQLException {
+	public ArrayList<FoodItem> getByIdCategory(int id) {
         ArrayList<FoodItem> foodItems = new ArrayList<>();
-        Statement statement = conn.createStatement();
-        String query = "SELECT * FROM `food_item` WHERE `idCategory` = " + id;
-        ResultSet rs = statement.executeQuery(query);
-        while (rs.next()) {
-            FoodItem foodItem = FoodItem.getFromResultSet(rs);
-            foodItems.add(foodItem);
-        }
+        try {
+			String query = "SELECT fi.*, fc.name AS categoryName FROM food_item fi JOIN food_category fc ON fi.idCategory = fc.id WHERE fi.idCategory = ? ORDER BY fi.name ASC";
+			PreparedStatement statement = conn.prepareStatement(query);
+			statement.setInt(1, id);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+			    FoodItem foodItem = FoodItem.getFromResultSet(rs);
+			    foodItems.add(foodItem);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         return foodItems;
     }
 
+	public ArrayList<FoodItem> getByWord(int idRestaurant, String keyword) {
+		ArrayList<FoodItem> foodItems = new ArrayList<>();
+		try {
+			String query = "SELECT fi.*,fc.name AS categoryName FROM food_item fi JOIN food_category fc ON fi.idCategory = fc.id   WHERE fc.idRestaurant = ? and fi.name LIKE N'%"+keyword+"%'";
+			PreparedStatement statement = conn.prepareStatement(query);
+			statement.setInt(1, idRestaurant);
+			ResultSet rs = statement.executeQuery();
+			while(rs.next()){
+				FoodItem foodItem = FoodItem.getFromResultSet(rs);
+				foodItems.add(foodItem);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return foodItems;
+	}
 	@Override
-	public void add(FoodItem t) throws SQLException {
+	public int add(FoodItem t) throws SQLException {
 		 if (t == null) {
 	            throw new SQLException("Food item rỗng");
 	        }
@@ -45,11 +78,12 @@ public class FoodItemDAO implements DAOinterface<FoodItem> {
 	        PreparedStatement statement = conn.prepareStatement(query);
 	        statement.setNString(1, t.getName());
 	        statement.setNString(2, t.getDescription());
-	        statement.setNString(3, t.getUrlImage());
+//	        statement.setNString(3, t.getUrlImage());
 	        statement.setNString(4, t.getUnitName());
 	        statement.setInt(5, t.getUnitPrice());
 	        statement.setInt(6, t.getIdCategory());
 	        int row = statement.executeUpdate();
+	        return row;
 	}
 
 	@Override
@@ -61,7 +95,7 @@ public class FoodItemDAO implements DAOinterface<FoodItem> {
 	        PreparedStatement statement = conn.prepareStatement(query);
 	        statement.setNString(1, t.getName());
 	        statement.setNString(2, t.getDescription());
-	        statement.setNString(3, t.getUrlImage());
+//	        statement.setNString(3, t.getUrlImage());
 	        statement.setNString(4, t.getUnitName());
 	        statement.setInt(5, t.getUnitPrice());
 	        statement.setInt(6, t.getIdCategory());

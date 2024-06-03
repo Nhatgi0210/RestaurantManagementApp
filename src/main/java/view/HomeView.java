@@ -15,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -28,6 +29,7 @@ import com.google.gson.Gson;
 
 import DAO.EmployeeDAO;
 import DAO.RestaurenDAO;
+import controller.ClientController;
 import mainPanel.AreaManagerPanel;
 import mainPanel.EmployeeManagerPanel;
 import mainPanel.ProductPanel;
@@ -40,6 +42,7 @@ import net.miginfocom.swing.MigLayout;
 
 import java.awt.Color;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
@@ -63,6 +66,7 @@ public class HomeView extends JFrame {
 	private StatisticPanel statisticPanel;
 	private EmployeeManagerPanel employeeManagerPanel;
 	private JButton buttonSelected;
+	private ClientController clientController;
 	/**
 	 * Launch the application.
 	 */
@@ -82,7 +86,7 @@ public class HomeView extends JFrame {
 	 * Create the frame.
 	 * @throws SQLException 
 	 */
-	public HomeView(Employee employee, Socket socket)  {
+	public HomeView(Employee employee, ClientController clientController)  {
 		try {
 			UIManager.setLookAndFeel(new FlatLightLaf());
 		} catch (UnsupportedLookAndFeelException e) {
@@ -97,8 +101,11 @@ public class HomeView extends JFrame {
 		
 		this.employee = employee;
 		this.socket = socket;
+		this.clientController = clientController;
 		this.restaurant = getRestaurantByID(employee.getIdRestaurant());
 		
+
+	
 //		try {
 //			restaurant = RestaurenDAO.getDao().get(employee.getIdRestaurant());
 //		} catch (SQLException e) {
@@ -113,12 +120,13 @@ public class HomeView extends JFrame {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+			
+		
 		
 		CardLayout cardLayout = new CardLayout();
 		JPanel mainPanel = new JPanel();
 		mainPanel.setBounds(211, 104, 1073, 587);
 		mainPanel.setLayout(cardLayout);
-		
 		
 		JPanel SideMenuPanel = new JPanel();
 		SideMenuPanel.setBackground(Color.decode("#0F433D"));
@@ -319,55 +327,39 @@ public class HomeView extends JFrame {
 //		lblNewLabel_2_1.setForeground(Color.WHITE);
 		lblNewLabel_2_1.setFont(new Font("Tahoma", Font.BOLD, 12));
 		panel_3.add(lblNewLabel_2_1);
-		
-		
 		setVisible(true);
 		if(restaurant.getId() == 1 || restaurant == null) {
-			Dialog restaurantDialog = new CreateRestaurantDialog(this, restaurant,this.socket);
+			Dialog restaurantDialog = new CreateRestaurantDialog(this, restaurant,this.clientController);
 			this.employee.setIdRestaurant(restaurant.getId());
 			setIdRestaurant(this.employee.getId(), restaurant.getId());
-			System.out.println(this.employee.getId());
 			restaurenNamelb.setText(restaurant.getName());
 			addresslb.setText(restaurant.getAddress());
 		}
 		statisticPanel = new StatisticPanel();
 		mainPanel.add(statisticPanel,"statistic");
-		employeeManagerPanel = new EmployeeManagerPanel(this.socket, this, restaurant, this.employee);
+		employeeManagerPanel = new EmployeeManagerPanel(this.clientController, this, restaurant, this.employee);
 		mainPanel.add(employeeManagerPanel,"employee");
-		productPanel = new ProductPanel();
+		productPanel = new ProductPanel(this.clientController, restaurant);
 		mainPanel.add(productPanel,"product");
 		areaManagerPanel = new AreaManagerPanel();
 		mainPanel.add(areaManagerPanel,"area");
 		profilePanel = new ProfilePanel();
 		mainPanel.add(profilePanel,"profile");
 		contentPane.add(mainPanel);
+	
+		
 		
 	}
 	public Restaurant getRestaurantByID(int id) {
 		String[] controltemp = {"getRestaurantById", Integer.toString(id)};
+		
 		Gson gson = new Gson();
-		try {
-			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-			out.writeObject(controltemp);
-			String restauranJSon = in.readLine();
-			Restaurant restaurant = gson.fromJson(restauranJSon, Restaurant.class);
-			return restaurant;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		Restaurant restaurant = gson.fromJson(clientController.sendRequest(controltemp), Restaurant.class);
+		return restaurant;
 	}
 	public void setIdRestaurant(int idEmployee, int idRestaurant) {
 		String[] controlTemp = {"setIdRestaurantForEmployee",Integer.toString(idEmployee), Integer.toString(idRestaurant)};
-		try {
-			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-			out.writeObject(controlTemp);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		clientController.sendRequest(controlTemp);
 		
 	}
 }

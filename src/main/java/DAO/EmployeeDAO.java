@@ -28,7 +28,7 @@ public class EmployeeDAO implements DAOinterface<Employee>{
 		return 0;
 	}
 	@Override
-	public ArrayList<Employee> getAll() throws SQLException {
+	public ArrayList<Employee> getAll(int idRestaurant) throws SQLException {
 		ArrayList<Employee> employees = new ArrayList<>();
 		Statement statement = conn.createStatement();
 		String query = "SELECT * FROM employee";
@@ -105,8 +105,6 @@ public class EmployeeDAO implements DAOinterface<Employee>{
 				stmt.setInt(6, t.getIdRestaurant());
 				row = stmt.executeUpdate();
 			} catch (SQLException e) {
-				
-				System.out.println("Lỗi CSDL");
 				return 0;
 			}
 			return row;
@@ -186,4 +184,18 @@ public class EmployeeDAO implements DAOinterface<Employee>{
         }
         return null;
     }
+	public void updateNamePhonePos(Employee t)  {
+        try {
+			String query = "UPDATE `employee` SET `name` = ?, `phoneNumber` = ?, `permissionName` = ? WHERE `username` = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setNString(1, t.getName());
+			stmt.setNString(2, t.getPhoneNumber());
+			stmt.setNString(3, t.getPermission().getName());
+			stmt.setNString(4, t.getUsername());
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

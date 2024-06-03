@@ -10,16 +10,24 @@ import models.FoodCategory;
 
 public class FoodCategoryDAO implements DAOinterface<FoodCategory>{
 	
+	public static FoodCategoryDAO getDAO() {
+		return new FoodCategoryDAO();
+	}
 	@Override
-	public ArrayList<FoodCategory> getAll() throws SQLException {
+	public ArrayList<FoodCategory> getAll(int idRestaurant) {
 		ArrayList<FoodCategory> foodCategories = new ArrayList<>();
-        Statement statement = conn.createStatement();
-        String query = "SELECT * FROM `food_category`";
-        ResultSet rs = statement.executeQuery(query);
-        while (rs.next()) {
-            FoodCategory foodCategory = FoodCategory.getFromResultSet(rs);
-            foodCategories.add(foodCategory);
-        }
+        try {
+			Statement statement = conn.createStatement();
+			String query = "SELECT * FROM `food_category` WHERE idRestaurant = " + idRestaurant;
+			ResultSet rs = statement.executeQuery(query);
+			while (rs.next()) {
+			    FoodCategory foodCategory = FoodCategory.getFromResultSet(rs);
+			    foodCategories.add(foodCategory);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         return foodCategories;
 	}
 
@@ -36,7 +44,7 @@ public class FoodCategoryDAO implements DAOinterface<FoodCategory>{
     }
 
 	@Override
-	public void add(FoodCategory t) throws SQLException {
+	public int add(FoodCategory t) throws SQLException {
 		 if (t == null) {
 	            throw new SQLException("FoodCategory rỗng");
 	        }
@@ -45,6 +53,7 @@ public class FoodCategoryDAO implements DAOinterface<FoodCategory>{
 	        PreparedStatement statement = conn.prepareStatement(query);
 	        statement.setNString(1, t.getName());
 	        int row = statement.executeUpdate();
+	       return row;
 	}
 
 	@Override

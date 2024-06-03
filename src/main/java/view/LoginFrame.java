@@ -14,6 +14,7 @@ import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.ui.FlatPanelUI;
 import com.google.gson.Gson;
 
+import controller.ClientController;
 import models.Employee;
 import others.MaHoa;
 
@@ -67,7 +68,7 @@ public class LoginFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public LoginFrame(Socket socket) {
+	public LoginFrame( ClientController clientController) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1024,620);
 		setLocationRelativeTo(null);
@@ -76,7 +77,7 @@ public class LoginFrame extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setLayout(null);
 		
-		LoginPanel loginPanel = new LoginPanel(socket, this);
+		LoginPanel loginPanel = new LoginPanel(this,clientController);
 		loginPanel.setBackground(new Color(255,255,255,50));
 		loginPanel.setBounds(525,121,415,338);
 		
@@ -129,7 +130,7 @@ public class LoginFrame extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				dispose();
-				new SignupFrame(socket);
+				new SignupFrame(clientController);
 				
 			}
 		});

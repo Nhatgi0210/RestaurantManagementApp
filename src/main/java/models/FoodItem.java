@@ -4,11 +4,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 
-public class FoodItem implements Model{
+public class FoodItem {
 	private int id;
-	private String name, description, urlImage, unitName;
+	private String name, description, unitName,categoryName;
 	private int unitPrice, idCategory;
-	DecimalFormat formatter = new DecimalFormat("###,###,###");
+	private  byte[] image;
+//	DecimalFormat formatter = new DecimalFormat("###,###,###");
 	
 	public FoodItem() {
 		
@@ -44,14 +45,17 @@ public class FoodItem implements Model{
 		this.description = description;
 	}
 
+	
+	
 
-	public String getUrlImage() {
-		return urlImage;
+
+	public byte[] getImage() {
+		return image;
 	}
 
 
-	public void setUrlImage(String urlImage) {
-		this.urlImage = urlImage;
+	public void setImage(byte[] image) {
+		this.image = image;
 	}
 
 
@@ -83,31 +87,39 @@ public class FoodItem implements Model{
 	public void setIdCategory(int idCategory) {
 		this.idCategory = idCategory;
 	}
+	
+	
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	
+	@Override
+	public String toString() {
+		return "FoodItem [id=" + id + ", name=" + name + ", description=" + description 
+				+ ", unitName=" + unitName + ", categoryName=" + categoryName + ", unitPrice=" + unitPrice
+				+ ", idCategory=" + idCategory + "]";
+	}
+
 
 	public static FoodItem getFromResultSet(ResultSet rs) throws SQLException {
         FoodItem f = new FoodItem();
         f.setId(rs.getInt("id"));
         f.setName(rs.getNString("name"));
         f.setDescription(rs.getNString("description"));
-        f.setUrlImage(rs.getNString("urlImage"));
+        f.setImage(rs.getBytes("image"));
         f.setUnitName(rs.getNString("unitName"));
         f.setUnitPrice(rs.getInt("unitPrice"));
         f.setIdCategory(rs.getInt("idCategory"));
+        f.setCategoryName(rs.getNString("categoryName"));
         return f;
     }
 
-	@Override
-	public String toStringvn() {
-		// TODO Auto-generated method stub
-		return String.format("%s (%s)", name, formatter.format(unitPrice));
-	}
 
-	@Override
-	public Object[] toRowTable() {
-		// TODO Auto-generated method stub
-		return new Object[] {
-				id,name,description, urlImage, unitName,unitPrice, idCategory 
-		};
-	}
-
+	
 }

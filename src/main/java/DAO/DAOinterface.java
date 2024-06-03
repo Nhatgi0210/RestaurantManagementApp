@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public interface DAOinterface <T> {
 	Connection conn =  ConnectToDatabase.getInstance().getConnection();
 	
-	public  ArrayList<T> getAll() throws SQLException;
+	public  ArrayList<T> getAll(int idRestaurant) throws SQLException;
 
     public  T get(int id) throws SQLException;
 

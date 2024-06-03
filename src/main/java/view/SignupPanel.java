@@ -18,6 +18,7 @@ import com.formdev.flatlaf.extras.components.FlatPasswordField;
 import com.formdev.flatlaf.extras.components.FlatTextField;
 import com.google.gson.Gson;
 
+import controller.ClientController;
 import models.Employee;
 import others.EmployeePermission;
 import others.MaHoa;
@@ -41,7 +42,7 @@ public class SignupPanel extends JPanel {
 	 */
 	public FlatButton btnNewButton;
 
-	public SignupPanel(Socket socket) {
+	public SignupPanel(ClientController clientController) {
 		setLayout(null);
 		setBounds(new Rectangle(415, 500));
 
@@ -113,17 +114,13 @@ public class SignupPanel extends JPanel {
 					JOptionPane.showMessageDialog(btnNewButton, "Vui Lòng điền đủ thông tin!");
 				} else {
 					Employee employee = new Employee(username, password, name, phone, EmployeePermission.MANAGER);
+					employee.setIdRestaurant(1);
 					Gson gson = new Gson();
 					String employeegson = gson.toJson(employee);
 					String[] control = { "signup", employeegson };
-					try {
-						ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-						DataInputStream in = new DataInputStream(socket.getInputStream());
-						out.writeObject(control);
-						// out.writeBytes(employeegson+"\n");
-//						System.out.println(in.read());
-
-						if (in.readInt() == 0)
+					String result = clientController.sendRequest(control);
+					
+						if (result.equals("0"))
 							JOptionPane.showMessageDialog(btnNewButton, "Username đã tồn tại!");
 
 						else {
@@ -134,10 +131,6 @@ public class SignupPanel extends JPanel {
 							passTextField.setText("");
 						}
 
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
 				}
 
 			}

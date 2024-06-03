@@ -9,13 +9,13 @@ import javax.swing.UIManager;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import socket.Client;
-import socket.ClientLogin;
+
 import socket.Server;
 import view.LoginFrame;
 
 public class testLogin {
 	public static void main(String[] args) {
-
+		System.gc();
 		try {
 			UIManager.setLookAndFeel(new FlatLightLaf());
 			
@@ -28,10 +28,7 @@ public class testLogin {
 			public void run() {
 				try {
 					new Server();
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -39,6 +36,6 @@ public class testLogin {
 		});
 		tr.start();
 		
-		new ClientLogin();
+		new Client();
 	}
 }

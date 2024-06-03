@@ -10,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 
 import com.google.gson.Gson;
 
+import controller.ClientController;
 import models.Employee;
 import models.Restaurant;
 import others.EmployeePermission;
@@ -31,11 +32,11 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.awt.event.ActionEvent;
 
-public class addEmployee extends JDialog {
+public class addEmployeeDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private EmployeeManagerPanel employeeManagerPanel;
-	private Socket socket;
+	private ClientController clientController;
 	private int idRestaurant;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField nameTextField;
@@ -58,9 +59,9 @@ public class addEmployee extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public addEmployee(EmployeeManagerPanel employeeManagerPanel,int idRestaurant, Socket socket) {
+	public addEmployeeDialog(EmployeeManagerPanel employeeManagerPanel,int idRestaurant, ClientController clientController) {
 		this.employeeManagerPanel = employeeManagerPanel;
-		this.socket = socket;
+		this.clientController = clientController;
 		this.idRestaurant = idRestaurant;
 	
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -191,21 +192,17 @@ public class addEmployee extends JDialog {
 		Gson gson = new Gson();
 		String employeeJson = gson.toJson(employee);
 		String[] control = {"signup",employeeJson};
-		try {
-			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-			DataInputStream in = new DataInputStream(socket.getInputStream());
-			out.writeObject(control);
-			if(in.readInt()==0) {
+		
+		
+			String result = clientController.sendRequest(control);
+			if(result.equals("0")) {
 				JOptionPane.showMessageDialog(contentPanel, "Tên đăng nhập đã tồn tại");
 			}
 			else {
 				dispose();
 				employeeManagerPanel.getAll();
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		
 		
 	}

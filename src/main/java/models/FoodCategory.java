@@ -5,6 +5,11 @@ import java.sql.SQLException;
 
 public class FoodCategory implements Model{
 
+	@Override
+	public String toString() {
+		return "FoodCategory [id=" + id + ", name=" + name + "]";
+	} 
+
 	private int id;
 	private String name;
 	
@@ -43,11 +48,7 @@ public class FoodCategory implements Model{
         return fc;
     }
 	
-	@Override
-	public String toStringvn() {
-		// TODO Auto-generated method stub
-		return name;
-	}
+	
 
 	@Override
 	public Object[] toRowTable() {
