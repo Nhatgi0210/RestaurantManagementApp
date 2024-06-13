@@ -113,7 +113,7 @@ public class EmployeeDAO implements DAOinterface<Employee>{
 	}
 
 	@Override
-	public void update(Employee t) throws SQLException {
+	public int update(Employee t) throws SQLException {
 		 if (t == null) {
 	            throw new SQLException("Employee rong");
 	        }
@@ -126,7 +126,7 @@ public class EmployeeDAO implements DAOinterface<Employee>{
 	        stmt.setNString(5, t.getPermission().getId());
 //	        stmt.setInt(6, t.getSalary());
 	        stmt.setInt(7, t.getId());
-	        stmt.executeUpdate();
+	       return stmt.executeUpdate();
 	}
 
 	@Override
@@ -143,17 +143,17 @@ public class EmployeeDAO implements DAOinterface<Employee>{
 		stmt.setInt(1, id);
 		stmt.executeUpdate();
 	}
-	public void deleteByUsername(String username) {
+	public int deleteByUsername(String username) {
 		PreparedStatement stmt;
 		try {
 			stmt = conn.prepareStatement("DELETE FROM `employee` WHERE `employee`.`username` = ?");
 			stmt.setString(1, username);
-			stmt.executeUpdate();
+			return stmt.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		return 0;
 	}
 	public Employee login(String userName, String password) {
         try {
@@ -184,7 +184,7 @@ public class EmployeeDAO implements DAOinterface<Employee>{
         }
         return null;
     }
-	public void updateNamePhonePos(Employee t)  {
+	public int updateNamePhonePos(Employee t)  {
         try {
 			String query = "UPDATE `employee` SET `name` = ?, `phoneNumber` = ?, `permissionName` = ? WHERE `username` = ?";
 			PreparedStatement stmt = conn.prepareStatement(query);
@@ -192,10 +192,11 @@ public class EmployeeDAO implements DAOinterface<Employee>{
 			stmt.setNString(2, t.getPhoneNumber());
 			stmt.setNString(3, t.getPermission().getName());
 			stmt.setNString(4, t.getUsername());
-			stmt.executeUpdate();
+			return stmt.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+        return 0;
 	}
 }

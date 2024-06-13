@@ -6,10 +6,7 @@ import java.awt.event.ActionListener;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
-/**
- *
- * @author RAVEN
- */
+
 public class ActionPanel extends javax.swing.JPanel {
 
     /**

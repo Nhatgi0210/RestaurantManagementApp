@@ -41,6 +41,7 @@ public class ClientController {
 	}
 	public String sendRequest(String[] request) {
 			try {
+				
 				InputStream in = socket.getInputStream();
 				Gson gson = new Gson();
 				String requestJson = gson.toJson(request);

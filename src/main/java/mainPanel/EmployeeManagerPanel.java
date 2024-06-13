@@ -22,6 +22,7 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.JSeparator;
 import java.awt.Color;
@@ -163,7 +164,14 @@ public class EmployeeManagerPanel extends JPanel {
 		model = new DefaultTableModel(vData, vHeader);
 //		model = new DefaultTableModel(new Object[][], Title);
 
-		table = new JTable();
+		table = new JTable() {
+			 @Override
+			    public void editingStopped(ChangeEvent e) {
+			        // Thực hiện các tác vụ sau khi chỉnh sửa ô kết thúc
+			        
+			        // ...
+			    }
+		};
 		table.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		table.setRowHeight(35);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -203,6 +211,8 @@ public class EmployeeManagerPanel extends JPanel {
 						String[] control = { "deleteByUsername", employeeUsername };
 						clientController.sendRequest(control);
 						getAll();
+					
+
 					}
 					
 				}
@@ -226,7 +236,7 @@ public class EmployeeManagerPanel extends JPanel {
 		}
 
 		model.fireTableDataChanged();
-
+		
 	}
 
 	public void getAll() {
@@ -236,8 +246,8 @@ public class EmployeeManagerPanel extends JPanel {
 			String employeeJson = clientController.sendRequest(control);
 			employees = gson.fromJson(employeeJson, new TypeToken<ArrayList<Employee>>() {
 			}.getType());
-			loadTable();
 		
+			loadTable();
 
 	}
 

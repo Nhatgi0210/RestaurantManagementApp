@@ -12,6 +12,7 @@ public class FoodCategory implements Model{
 
 	private int id;
 	private String name;
+
 	
 	
 	public FoodCategory() {

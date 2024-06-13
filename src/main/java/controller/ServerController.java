@@ -107,8 +107,8 @@ public class ServerController extends Thread {
 			out.flush();
 			break;
 		case "setIdRestaurantForEmployee":
-			UpdateDataController.setIdRestaurant(Integer.parseInt(controller[1]), Integer.parseInt(controller[2]));
-			out.write(mahoa("1"));
+			int result8 = UpdateDataController.setIdRestaurant(Integer.parseInt(controller[1]), Integer.parseInt(controller[2]));
+			out.write(mahoa(Integer.toString(result8)));
 			out.flush();
 			break;
 		case "getAllEmployee":
@@ -117,7 +117,9 @@ public class ServerController extends Thread {
 			out.flush();
 			break;
 		case "deleteByUsername":
-			UpdateDataController.deleteByUsername(controller[1]);
+			int result9 = UpdateDataController.deleteByUsername(controller[1]);
+			out.write(mahoa(Integer.toString(result9)));
+			out.flush();
 			break;
 		case "getEmployeeByPos":
 			String result1 = GetDataController.getEmployeeByPos(Integer.parseInt(controller[1]), controller[2]);
@@ -130,7 +132,9 @@ public class ServerController extends Thread {
 			out.flush();
 			break;
 		case "updateNamePhonePos":
-			UpdateDataController.updateNamePhonePos(controller[1]);
+			int result10 = UpdateDataController.updateNamePhonePos(controller[1]);
+			out.write(mahoa(Integer.toString(result10)));
+			out.flush();
 			break;
 		case "getAllType":
 			String result3 = GetDataController.getAllType(Integer.parseInt(controller[1]));
@@ -152,6 +156,60 @@ public class ServerController extends Thread {
 			out.write(mahoa(result6));
 			out.flush();
 			break;
+		case "addFoodCategory":
+			AddDataController.addFoodCategory(Integer.parseInt(controller[1]), controller[2]);
+			out.write(mahoa("1"));
+			out.flush();
+			break;
+		case "DeleteFoodCategory":
+			UpdateDataController.deleteFoodCategory(Integer.parseInt(controller[1]));
+			out.write(mahoa("1"));
+			out.flush();
+			break;
+		case "addProduct":
+			int result11 = AddDataController.addFoodItem(controller[1]);
+			out.write(mahoa(Integer.toString(result11)));
+			out.flush();
+			break;
+		case "updateProduct":
+			int result12 =UpdateDataController.updateProduct(controller[1]);
+			out.write(mahoa(Integer.toString(result12)));
+			out.flush();
+			break;
+		case "addArea":
+			int result13 = AddDataController.addArea(controller[1]);
+			out.write(mahoa(Integer.toString(result13)));
+			out.flush();
+			break;
+		case "DeleteArea":
+			int result14 = UpdateDataController.deleteArea(Integer.parseInt(controller[1]));
+			out.write(mahoa(result14+""));
+			out.flush();
+			break;
+		case "getAllArea":
+			String result15 = GetDataController.getAllArea(Integer.parseInt(controller[1]));
+			out.write(mahoa(result15));
+			out.flush();
+			break;
+		case "getAllTable":
+			String result16 = GetDataController.getAllTable(Integer.parseInt(controller[1]));
+			out.write(mahoa(result16));
+			out.flush();
+			break;
+		case "getTableByArea":
+			String result17 = GetDataController.getTableByArea(Integer.parseInt(controller[1]));
+			out.write(mahoa(result17));
+			out.flush();
+			break;
+		case "addTable":
+			int result18 = AddDataController.addTable(controller[1]);
+			out.write(mahoa(""+result18));
+			out.flush();
+			break;
+		case "checkTableExist":
+			int result19 = CheckDataController.checkTableExist(controller[1], Integer.parseInt(controller[2]));
+			out.write(mahoa(""+result19));
+			out.flush();
 		default:
 			break;
 		}

@@ -9,7 +9,7 @@ public class Table implements Model{
 	private int id;
     private String name;
     private TableStatus status;
-    
+    private Area area;
     
 	public Table() {
 		
@@ -43,13 +43,21 @@ public class Table implements Model{
         t.setId(rs.getInt("id"));
         t.setName(rs.getNString("name"));
         t.setStatus(TableStatus.getById(rs.getNString("status")));
+        Area area = new Area();
+        area.setId(rs.getInt("idArea"));
+        area.setName(rs.getNString("area"));
+        t.setArea(area);
         return t;
     }
-	@Override
-	public String toStringvn() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public Area getArea() {
+		return area;
 	}
+
+	public void setArea(Area area) {
+		this.area = area;
+	}
+
 
 	@Override
 	public Object[] toRowTable() {

@@ -80,8 +80,9 @@ public class RestaurenDAO implements DAOinterface<Restaurant> {
 	}
 
 	@Override
-	public void update(Restaurant t) throws SQLException {
+	public int update(Restaurant t) throws SQLException {
 //	       String query = 
+		return 0;
 	}
 
 	@Override

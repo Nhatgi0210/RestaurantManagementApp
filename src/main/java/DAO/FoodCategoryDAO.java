@@ -55,9 +55,22 @@ public class FoodCategoryDAO implements DAOinterface<FoodCategory>{
 	        int row = statement.executeUpdate();
 	       return row;
 	}
-
+	
+	public int addByIdrestaurant(int idRestaurant, String name) {
+		try {
+			String query = "INSERT INTO `food_category`(`name`, `idRestaurant`) VALUES (?,?)";
+			PreparedStatement statement = conn.prepareStatement(query);
+			statement.setString(1, name);
+			statement.setInt(2, idRestaurant);
+			return statement.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
 	@Override
-	public void update(FoodCategory t) throws SQLException {
+	public int update(FoodCategory t) throws SQLException {
 		 if (t == null) {
 	            throw new SQLException("FoodCategory rỗng");
 	        }
@@ -67,6 +80,7 @@ public class FoodCategoryDAO implements DAOinterface<FoodCategory>{
 	        statement.setNString(1, t.getName());
 	        statement.setInt(2, t.getId());
 	        int row = statement.executeUpdate();
+	        return row;
 	}
 
 	@Override

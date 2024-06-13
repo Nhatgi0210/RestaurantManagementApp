@@ -6,14 +6,18 @@ import java.util.ArrayList;
 
 import com.google.gson.Gson;
 
+import DAO.AreaDAO;
 import DAO.EmployeeDAO;
 import DAO.FoodCategoryDAO;
 import DAO.FoodItemDAO;
 import DAO.RestaurenDAO;
+import DAO.TableDAO;
+import models.Area;
 import models.Employee;
 import models.FoodCategory;
 import models.FoodItem;
 import models.Restaurant;
+import models.Table;
 
 public class GetDataController {
 	public static String getRestaurentById(int id) {
@@ -31,7 +35,6 @@ public class GetDataController {
 			ArrayList<Employee> rs = EmployeeDAO.getDAO().getByIdRestaurant(idRestaurant);
 			Gson gson = new Gson();
 			String result = gson.toJson(rs);
-			System.out.println(result.getBytes().length);
 			return result;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -86,5 +89,23 @@ public class GetDataController {
 		Gson gson = new Gson();
 		String FoodItemsJson = gson.toJson(foodItems);
 		return FoodItemsJson;
+	}
+	public static String getAllArea(int idRestaurant) {
+		ArrayList<Area> areas = AreaDAO.getDAO().getAll(idRestaurant);
+		Gson gson = new Gson();
+		String areaJson = gson.toJson(areas);
+		return areaJson;
+	}
+	public static String getAllTable(int idRestaurant) {
+		ArrayList<Table> tables = TableDAO.getDAO().getAll(idRestaurant);
+		Gson gson = new Gson();
+		String tableJson = gson.toJson(tables);
+		return tableJson;
+	}
+	public static String getTableByArea(int idArea) {
+		ArrayList<Table> tables = TableDAO.getDAO().getByArea(idArea);
+		Gson gson = new Gson();
+		String tableJson = gson.toJson(tables);
+		return tableJson;
 	}
 }

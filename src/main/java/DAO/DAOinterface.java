@@ -13,7 +13,7 @@ public interface DAOinterface <T> {
 
     public  int add(T t) throws SQLException;
 
-    public  void update(T t) throws SQLException;
+    public  int update(T t) throws SQLException;
 
     public  void delete(T t) throws SQLException;
 

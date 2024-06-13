@@ -1,72 +1,43 @@
 package view;
 
 import java.awt.EventQueue;
+import java.awt.Color;
+import java.awt.Dialog;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Image;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.sql.SQLException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.LayoutStyle;
+import javax.swing.JSeparator;
+import javax.swing.SpringLayout;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
-import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.formdev.flatlaf.ui.FlatRoundBorder;
 import com.google.gson.Gson;
 
-import DAO.EmployeeDAO;
-import DAO.RestaurenDAO;
-import controller.ClientController;
 import mainPanel.AreaManagerPanel;
 import mainPanel.EmployeeManagerPanel;
 import mainPanel.ProductPanel;
 import mainPanel.ProfilePanel;
 import mainPanel.StatisticPanel;
-import models.Employee;
 import models.Restaurant;
 
-import net.miginfocom.swing.MigLayout;
-
-import java.awt.Color;
-import java.awt.Dialog;
-import java.awt.Dimension;
-import java.awt.Font;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
-import java.awt.GridLayout;
-import java.awt.FlowLayout;
-import javax.swing.SpringLayout;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.CardLayout;
-
-public class HomeView extends JFrame {
+public class OrderFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private Employee employee;
-	private Socket socket;
-	private Restaurant restaurant;
-	private ProfilePanel profilePanel;
-	private AreaManagerPanel areaManagerPanel;
-	private ProductPanel productPanel;
-	private StatisticPanel statisticPanel;
-	private EmployeeManagerPanel employeeManagerPanel;
-	private JButton buttonSelected;
-	private ClientController clientController;
+
 	/**
 	 * Launch the application.
 	 */
@@ -74,7 +45,8 @@ public class HomeView extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					
+					OrderFrame frame = new OrderFrame();
+					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -84,9 +56,8 @@ public class HomeView extends JFrame {
 
 	/**
 	 * Create the frame.
-	 * @throws SQLException 
 	 */
-	public HomeView(Employee employee, ClientController clientController)  {
+	public OrderFrame() {
 		try {
 			UIManager.setLookAndFeel(new FlatLightLaf());
 		} catch (UnsupportedLookAndFeelException e) {
@@ -362,4 +333,6 @@ public class HomeView extends JFrame {
 		clientController.sendRequest(controlTemp);
 		
 	}
+	}
+
 }

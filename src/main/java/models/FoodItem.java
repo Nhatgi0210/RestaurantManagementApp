@@ -6,9 +6,9 @@ import java.text.DecimalFormat;
 
 public class FoodItem {
 	private int id;
-	private String name, description, unitName,categoryName;
+	private String name, description, unitName,categoryName,imagePath;
 	private int unitPrice, idCategory;
-	private  byte[] image;
+	
 //	DecimalFormat formatter = new DecimalFormat("###,###,###");
 	
 	public FoodItem() {
@@ -49,13 +49,15 @@ public class FoodItem {
 	
 
 
-	public byte[] getImage() {
-		return image;
+
+
+	public String getImagePath() {
+		return imagePath;
 	}
 
 
-	public void setImage(byte[] image) {
-		this.image = image;
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
 
 
@@ -112,7 +114,7 @@ public class FoodItem {
         f.setId(rs.getInt("id"));
         f.setName(rs.getNString("name"));
         f.setDescription(rs.getNString("description"));
-        f.setImage(rs.getBytes("image"));
+        f.setImagePath(rs.getString("imagePath"));
         f.setUnitName(rs.getNString("unitName"));
         f.setUnitPrice(rs.getInt("unitPrice"));
         f.setIdCategory(rs.getInt("idCategory"));
