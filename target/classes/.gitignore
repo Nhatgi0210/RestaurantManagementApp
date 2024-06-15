@@ -1,6 +1,7 @@
-/mainPanel/
-/controller/
-/DAO/
-/view/
-/models/
 /META-INF/
+/view/
+/mainPanel/
+/others/
+/models/
+/DAO/
+/controller/

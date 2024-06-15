@@ -13,7 +13,7 @@ public class Order implements Model {
 	private int id, idEmployee, idTable;
     private OrderStatus status;
     private Timestamp orderDate, payDate;
-    private int paidAmount, totalAmount, discount;
+    private int totalAmount;
     private Employee employee;
     private Table table;
     
@@ -71,13 +71,7 @@ public class Order implements Model {
         this.payDate = payDate;
     }
 
-    public int getPaidAmount() {
-        return paidAmount;
-    }
-
-    public void setPaidAmount(int paidAmount) {
-        this.paidAmount = paidAmount;
-    }
+   
 
     public int getTotalAmount() {
         return totalAmount;
@@ -87,13 +81,7 @@ public class Order implements Model {
         this.totalAmount = totalAmount;
     }
 
-    public int getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(int discount) {
-        this.discount = discount;
-    }
+    
 
     public Employee getEmployee() {
         return employee;
@@ -114,7 +102,7 @@ public class Order implements Model {
     }
 
     public int getFinalAmount() {
-        return totalAmount - (int) totalAmount * discount / 100;
+        return totalAmount;
     }
 
     public static Order getFromResultSet(ResultSet rs) throws SQLException {
@@ -125,17 +113,10 @@ public class Order implements Model {
         o.setStatus(OrderStatus.getById(rs.getNString("status")));
         o.setOrderDate(rs.getTimestamp("orderDate"));
         o.setPayDate(rs.getTimestamp("payDate"));
-        o.setPaidAmount(rs.getInt("paidAmount"));
         o.setTotalAmount(rs.getInt("totalAmount"));
-        o.setDiscount(rs.getInt("discount"));
         return o;
     }
 
-	@Override
-	public String toStringvn() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public Object[] toRowTable() {

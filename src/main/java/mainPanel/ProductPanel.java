@@ -469,6 +469,8 @@ public class ProductPanel extends JPanel {
 			JOptionPane.showMessageDialog(nametextField, "Cập nhật thông tin món thất bại!");
 		} else {
 			JOptionPane.showMessageDialog(nametextField, "Cập nhật thông tin món thành công!");
+			comboBox.setSelectedIndex(0);
+			getAllProduct();
 		}
 	}
 
@@ -481,7 +483,9 @@ public class ProductPanel extends JPanel {
 		Path destinationPath;
 		
 			try {
-				String temp = (getClass().getResource("/image/")+fileName).substring(6);
+				File resourcesDirectory = new File("src/main/resources");
+				String resourcesPath = resourcesDirectory.getAbsolutePath();
+				String temp = resourcesPath+"/image/"+fileName;
 				destinationPath = 	Paths.get(temp);
 				Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
 				return destinationPath.toString();

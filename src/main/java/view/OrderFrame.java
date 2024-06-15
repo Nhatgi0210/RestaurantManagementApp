@@ -9,6 +9,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.Socket;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,18 +27,46 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.google.gson.Gson;
 
+import controller.ClientController;
 import mainPanel.AreaManagerPanel;
 import mainPanel.EmployeeManagerPanel;
+import mainPanel.OrderPanel;
 import mainPanel.ProductPanel;
 import mainPanel.ProfilePanel;
 import mainPanel.StatisticPanel;
+import mainPanel.listTablePanel;
+import models.Employee;
 import models.Restaurant;
+import models.Table;
+import net.miginfocom.swing.MigLayout;
 
+import java.awt.Color;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Font;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
+import java.awt.GridLayout;
+import java.awt.FlowLayout;
+import javax.swing.SpringLayout;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.CardLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 public class OrderFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-
+	private Employee employee;
+	private Socket socket;
+	private Restaurant restaurant;
+	private JButton buttonSelected;
+	private ClientController clientController;
+	private listTablePanel listTablePanel;
+	private CardLayout cardLayout;
+	private JPanel mainPanel;
+	private OrderPanel orderPanel;
 	/**
 	 * Launch the application.
 	 */
@@ -45,8 +74,7 @@ public class OrderFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					OrderFrame frame = new OrderFrame();
-					frame.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -57,7 +85,7 @@ public class OrderFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public OrderFrame() {
+	public OrderFrame(Employee employee, ClientController clientController) {
 		try {
 			UIManager.setLookAndFeel(new FlatLightLaf());
 		} catch (UnsupportedLookAndFeelException e) {
@@ -71,7 +99,6 @@ public class OrderFrame extends JFrame {
 		UIManager.put("Table.selectionForeground", Color.black);
 		
 		this.employee = employee;
-		this.socket = socket;
 		this.clientController = clientController;
 		this.restaurant = getRestaurantByID(employee.getIdRestaurant());
 		
@@ -94,14 +121,14 @@ public class OrderFrame extends JFrame {
 			
 		
 		
-		CardLayout cardLayout = new CardLayout();
-		JPanel mainPanel = new JPanel();
-		mainPanel.setBounds(211, 104, 1073, 587);
+		cardLayout = new CardLayout();
+		mainPanel = new JPanel();
+		mainPanel.setBounds(0, 104, 1284, 587);
 		mainPanel.setLayout(cardLayout);
 		
 		JPanel SideMenuPanel = new JPanel();
 		SideMenuPanel.setBackground(Color.decode("#0F433D"));
-		SideMenuPanel.setBounds(0, 0, 211, 691);
+		SideMenuPanel.setBounds(0, 0, 211, 105);
 		contentPane.add(SideMenuPanel);
 		SideMenuPanel.setLayout(null);
 		
@@ -112,128 +139,6 @@ public class OrderFrame extends JFrame {
 		Image b = a.getImage().getScaledInstance(186, 52, Image.SCALE_SMOOTH);
 		Logo.setIcon(new ImageIcon(b));
 		SideMenuPanel.add(Logo);
-		
-		JButton statisticButton = new JButton("Thống Kê");
-		buttonSelected = statisticButton;
-		statisticButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				buttonSelected.setBackground(new Color(15, 67, 61));
-				buttonSelected = statisticButton;
-				buttonSelected.setBackground(Color.decode("#145DA0"));
-				cardLayout.show(mainPanel, "statistic");
-				
-			}
-		});
-		
-		statisticButton.setHorizontalAlignment(SwingConstants.LEFT);
-		statisticButton.setFont(new Font("Tahoma", Font.BOLD, 15));
-		statisticButton.setForeground(Color.WHITE);
-		statisticButton.setBounds(0, 199, 211, 52);
-		statisticButton.setBackground(Color.decode("#145DA0"));
-		statisticButton.setBorderPainted(false);
-		statisticButton.setIcon(new FlatSVGIcon("svg/statistic.svg"));
-		SideMenuPanel.add(statisticButton);
-		
-		JButton employeeManagerButton = new JButton("Quản Lý Nhân Sự");
-		employeeManagerButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				buttonSelected.setBackground(new Color(15, 67, 61));
-				buttonSelected = employeeManagerButton;
-				buttonSelected.setBackground(Color.decode("#145DA0"));
-				cardLayout.show(mainPanel, "employee");
-				employeeManagerPanel.getAll();
-			}
-		});
-		employeeManagerButton.setHorizontalAlignment(SwingConstants.LEFT);
-		employeeManagerButton.setForeground(Color.WHITE);
-		employeeManagerButton.setFont(new Font("Tahoma", Font.BOLD, 15));
-		employeeManagerButton.setBorderPainted(false);
-		employeeManagerButton.setBackground(new Color(15, 67, 61));
-		employeeManagerButton.setBounds(0, 251, 211, 52);
-		employeeManagerButton.setIcon(new FlatSVGIcon("svg/employee.svg"));
-		SideMenuPanel.add(employeeManagerButton);
-		
-		JButton productButton = new JButton("Sản Phẩm");
-		productButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				buttonSelected.setBackground(new Color(15, 67, 61));
-				buttonSelected = productButton;
-				buttonSelected.setBackground(Color.decode("#145DA0"));
-				cardLayout.show(mainPanel, "product");
-			}
-		});
-		productButton.setHorizontalAlignment(SwingConstants.LEFT);
-		productButton.setForeground(Color.WHITE);
-		productButton.setFont(new Font("Tahoma", Font.BOLD, 15));
-		productButton.setBorderPainted(false);
-		productButton.setBackground(new Color(15, 67, 61));
-		productButton.setBounds(0, 304, 211, 52);
-		productButton.setIcon(new FlatSVGIcon("svg/product.svg"));
-		SideMenuPanel.add(productButton);
-		
-		JButton areaManagerButton = new JButton("Khu Vực");
-		areaManagerButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				buttonSelected.setBackground(new Color(15, 67, 61));
-				buttonSelected = areaManagerButton;
-				buttonSelected.setBackground(Color.decode("#145DA0"));
-				cardLayout.show(mainPanel, "area");
-			}
-		});
-		areaManagerButton.setHorizontalAlignment(SwingConstants.LEFT);
-		areaManagerButton.setForeground(Color.WHITE);
-		areaManagerButton.setFont(new Font("Tahoma", Font.BOLD, 15));
-		areaManagerButton.setBorderPainted(false);
-		areaManagerButton.setBackground(new Color(15, 67, 61));
-		areaManagerButton.setBounds(0, 358, 211, 52);
-		areaManagerButton.setIcon(new FlatSVGIcon("svg/area.svg"));
-		SideMenuPanel.add(areaManagerButton);
-		
-		JSeparator separator = new JSeparator();
-		separator.setBounds(0, 141, 211, 2);
-		SideMenuPanel.add(separator);
-		
-		JButton profileButton = new JButton("Profile");
-		profileButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				buttonSelected.setBackground(new Color(15, 67, 61));
-				buttonSelected = profileButton;
-				buttonSelected.setBackground(Color.decode("#145DA0"));
-				cardLayout.show(mainPanel, "profile");
-			}
-		});
-		profileButton.setHorizontalAlignment(SwingConstants.LEFT);
-		profileButton.setForeground(Color.WHITE);
-		profileButton.setFont(new Font("Tahoma", Font.BOLD, 15));
-		profileButton.setBorderPainted(false);
-		profileButton.setBackground(new Color(15, 67, 61));
-		profileButton.setBounds(0, 479, 211, 52);
-		profileButton.setIcon(new FlatSVGIcon("svg/profile.svg"));
-		SideMenuPanel.add(profileButton);
-		
-		JButton settingButton = new JButton("Cài đặt");
-		settingButton.setHorizontalAlignment(SwingConstants.LEFT);
-		settingButton.setForeground(Color.WHITE);
-		settingButton.setFont(new Font("Tahoma", Font.BOLD, 15));
-		settingButton.setBorderPainted(false);
-		settingButton.setBackground(new Color(15, 67, 61));
-		settingButton.setBounds(0, 532, 211, 52);
-		settingButton.setIcon(new FlatSVGIcon("svg/setting.svg"));
-		SideMenuPanel.add(settingButton);
-		
-		JButton logoutButton = new JButton("Đăng xuất");
-		logoutButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		logoutButton.setHorizontalAlignment(SwingConstants.LEFT);
-		logoutButton.setForeground(Color.WHITE);
-		logoutButton.setFont(new Font("Tahoma", Font.BOLD, 15));
-		logoutButton.setBorderPainted(false);
-		logoutButton.setBackground(new Color(15, 67, 61));
-		logoutButton.setBounds(0, 586, 211, 52);
-		logoutButton.setIcon(new FlatSVGIcon("svg/logout.svg"));
-		SideMenuPanel.add(logoutButton);
 		
 		JPanel panel = new JPanel();
 		panel.setBounds(211, 0, 1073, 105);
@@ -284,6 +189,12 @@ public class OrderFrame extends JFrame {
 		panel_3.putClientProperty("arc", 400);
 		
 		JLabel lblNewLabel_1 = new JLabel();
+		lblNewLabel_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+			}
+		});
 		lblNewLabel_1.setText(this.employee.getName());
 		lblNewLabel_1.setIcon(new FlatSVGIcon("svg/accountblack.svg"));
 		panel_3.add(lblNewLabel_1);
@@ -299,25 +210,12 @@ public class OrderFrame extends JFrame {
 		lblNewLabel_2_1.setFont(new Font("Tahoma", Font.BOLD, 12));
 		panel_3.add(lblNewLabel_2_1);
 		setVisible(true);
-		if(restaurant.getId() == 1 || restaurant == null) {
-			Dialog restaurantDialog = new CreateRestaurantDialog(this, restaurant,this.clientController);
-			this.employee.setIdRestaurant(restaurant.getId());
-			setIdRestaurant(this.employee.getId(), restaurant.getId());
-			restaurenNamelb.setText(restaurant.getName());
-			addresslb.setText(restaurant.getAddress());
-		}
-		statisticPanel = new StatisticPanel();
-		mainPanel.add(statisticPanel,"statistic");
-		employeeManagerPanel = new EmployeeManagerPanel(this.clientController, this, restaurant, this.employee);
-		mainPanel.add(employeeManagerPanel,"employee");
-		productPanel = new ProductPanel(this.clientController, restaurant);
-		mainPanel.add(productPanel,"product");
-		areaManagerPanel = new AreaManagerPanel(this.clientController, restaurant);
-		mainPanel.add(areaManagerPanel,"area");
-		profilePanel = new ProfilePanel();
-		mainPanel.add(profilePanel,"profile");
+		listTablePanel = new listTablePanel(this,this.clientController, restaurant);
+		mainPanel.add(listTablePanel,"listTable");
+		orderPanel = new OrderPanel(this,this.clientController, restaurant, this.employee);
+		mainPanel.add(orderPanel,"order");
 		contentPane.add(mainPanel);
-	
+		
 		
 		
 	}
@@ -333,6 +231,15 @@ public class OrderFrame extends JFrame {
 		clientController.sendRequest(controlTemp);
 		
 	}
+	public void showOrderPanel(Table table) {
+		orderPanel.setTable(table);
+		cardLayout.show(mainPanel,"order");
+		
 	}
-
+	public void showlistTable() {
+		cardLayout.show(mainPanel,"listTable");
+		listTablePanel.loadAll();
+	}
 }
+
+

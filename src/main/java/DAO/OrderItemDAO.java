@@ -11,8 +11,10 @@ import models.OrderItem;
 
 public class OrderItemDAO implements DAOinterface<OrderItem> {
 
+	public static OrderItemDAO getDAO() {
+		return new OrderItemDAO();
+	}
 	 FoodItemDAO foodItemDao = new FoodItemDAO();
-	@Override
 	public ArrayList<OrderItem> getAll() throws SQLException {
 		 ArrayList<OrderItem> orderItems = new ArrayList<>();
 	        Statement statement = conn.createStatement();
@@ -21,7 +23,6 @@ public class OrderItemDAO implements DAOinterface<OrderItem> {
 	        while (rs.next()) {
 	            OrderItem orderItem = OrderItem.getFromResultSet(rs);
 	            orderItem.setFoodItem(foodItemDao.get(orderItem.getIdFoodItem()));
-	            orderItem.setToppingItem(foodItemDao.get(orderItem.getIdTopping()));
 	            orderItems.add(orderItem);
 	        }
 	        return orderItems;
@@ -34,26 +35,30 @@ public class OrderItemDAO implements DAOinterface<OrderItem> {
 	}
 
 	@Override
-	public void add(OrderItem t) throws SQLException {
-		// TODO Auto-generated method stub
-		if (t == null) {
-            throw new SQLException("Order Item rỗng");
-        }
-        String query = "INSERT INTO `order_item` (`idOrder`, `idFoodItem`, `idTopping`, `quantity`, `foodPrice`, `toppingPrice`, `note`) VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE  `quantity` = ?";
-        PreparedStatement stmt = conn.prepareStatement(query);
-        stmt.setInt(1, t.getIdOrder());
-        stmt.setInt(2, t.getIdFoodItem());
-        stmt.setInt(3, t.getIdTopping());
-        stmt.setInt(4, t.getQuantity());
-        stmt.setInt(5, t.getFoodPrice());
-        stmt.setInt(6, t.getToppingPrice());
-        stmt.setNString(7, t.getNote());
-        stmt.setInt(8, t.getQuantity());
-        stmt.executeUpdate();
+	public int add(OrderItem t) {
+		int row = 0;
+        try {
+			String query = "INSERT INTO `order_item` (`idOrder`, `idFoodItem`, `quantity`, `unitPrice`) VALUES (?, ?, ?, ?)";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setInt(1, t.getIdOrder());
+			stmt.setInt(2, t.getIdFoodItem());
+//        stmt.setInt(3, t.getIdTopping());
+			stmt.setInt(3, t.getQuantity());
+			stmt.setInt(4, t.getFoodPrice());
+//        stmt.setInt(6, t.getToppingPrice());
+//        stmt.setNString(7, t.getNote());
+//			stmt.setInt(8, t.getQuantity());
+			row = stmt.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return row;
 	}
 
 	@Override
-	public void update(OrderItem t) throws SQLException {
+	public int update(OrderItem t) throws SQLException {
+		int row = 0;
 		if (t == null) {
             throw new SQLException("Order Item rỗng");
         }
@@ -61,12 +66,13 @@ public class OrderItemDAO implements DAOinterface<OrderItem> {
         PreparedStatement stmt = conn.prepareStatement(query);
         stmt.setInt(1, t.getQuantity());
         stmt.setInt(2, t.getFoodPrice());
-        stmt.setInt(3, t.getToppingPrice());
-        stmt.setNString(4, t.getNote());
+//        stmt.setInt(3, t.getToppingPrice());
+//        stmt.setNString(4, t.getNote());
         stmt.setInt(5, t.getIdOrder());
         stmt.setInt(6, t.getIdFoodItem());
-        stmt.setInt(7, t.getIdTopping());
-        stmt.executeUpdate();
+//        stmt.setInt(7, t.getIdTopping());
+        row = stmt.executeUpdate();
+        return row;
 	}
 
 	@Override
@@ -77,7 +83,7 @@ public class OrderItemDAO implements DAOinterface<OrderItem> {
 	        PreparedStatement stmt = conn.prepareStatement("DELETE FROM `order_item` WHERE `idOrder` = ? AND `idFoodItem` = ? AND `idTopping` = ?");
 	        stmt.setInt(1, t.getIdOrder());
 	        stmt.setInt(2, t.getIdFoodItem());
-	        stmt.setInt(3, t.getIdTopping());
+//	        stmt.setInt(3, t.getIdTopping());
 	        stmt.executeUpdate();
 	}
 
@@ -85,6 +91,18 @@ public class OrderItemDAO implements DAOinterface<OrderItem> {
 	public void deleteById(int id) throws SQLException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public ArrayList<OrderItem> getAll(int idRestaurant) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public int addOrderItems(ArrayList<OrderItem> orderItems) {
+		for(OrderItem orderItem : orderItems) {
+			add(orderItem);
+		}
+		return 1;
 	}
 
 }

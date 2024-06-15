@@ -100,7 +100,6 @@ public class HomeView extends JFrame {
 		UIManager.put("Table.selectionForeground", Color.black);
 		
 		this.employee = employee;
-		this.socket = socket;
 		this.clientController = clientController;
 		this.restaurant = getRestaurantByID(employee.getIdRestaurant());
 		

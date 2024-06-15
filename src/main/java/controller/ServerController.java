@@ -210,6 +210,31 @@ public class ServerController extends Thread {
 			int result19 = CheckDataController.checkTableExist(controller[1], Integer.parseInt(controller[2]));
 			out.write(mahoa(""+result19));
 			out.flush();
+		case "searchOrder":
+			String result20 = GetDataController.searchOrder(Integer.parseInt(controller[1]));
+			out.write(mahoa(result20));
+			out.flush();
+			break;
+		case "newOrder":
+			int result21 = UpdateDataController.newOrder(controller[1]);
+			out.write(mahoa(""+result21));
+			out.flush();
+			break;
+		case "addOrderItem":
+			int result22 = UpdateDataController.addOrderItem(controller[1]);
+			out.write(mahoa(""+result22));
+			out.flush();
+			break;
+		case "activeTable":
+			int result23 = UpdateDataController.updateStatus(Integer.parseInt(controller[1]));
+			out.write(mahoa(""+result23));
+			out.flush();
+			break;
+		case "pay":
+			int result24 = UpdateDataController.pay(Integer.parseInt(controller[1]),Integer.parseInt(controller[2]));
+			out.write(mahoa(""+result24));
+			out.flush();
+			break;
 		default:
 			break;
 		}

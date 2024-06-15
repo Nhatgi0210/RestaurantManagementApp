@@ -10,12 +10,14 @@ import DAO.AreaDAO;
 import DAO.EmployeeDAO;
 import DAO.FoodCategoryDAO;
 import DAO.FoodItemDAO;
+import DAO.OrderDAO;
 import DAO.RestaurenDAO;
 import DAO.TableDAO;
 import models.Area;
 import models.Employee;
 import models.FoodCategory;
 import models.FoodItem;
+import models.Order;
 import models.Restaurant;
 import models.Table;
 
@@ -107,5 +109,11 @@ public class GetDataController {
 		Gson gson = new Gson();
 		String tableJson = gson.toJson(tables);
 		return tableJson;
+	}
+	public static String searchOrder(int idTable) {
+		Order order = OrderDAO.getDao().search(idTable);
+		Gson gson = new Gson();
+		String orderJson = gson.toJson(order);
+		return orderJson;
 	}
 }

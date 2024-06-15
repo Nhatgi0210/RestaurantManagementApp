@@ -113,7 +113,11 @@ public class LoginPanel extends JPanel {
 				else {
 					Employee employeeResult = gson.fromJson(stringEmployeeResult, Employee.class);
 					loginFrame.dispose();
-					new HomeView(employeeResult,clientController);
+					if(employeeResult.getPermission().getName().equals("Quản Lý"))
+						new HomeView(employeeResult,clientController);
+					else {
+						new OrderFrame(employeeResult, clientController);
+					}
 				}
 
 			}

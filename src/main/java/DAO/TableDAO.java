@@ -124,5 +124,34 @@ public class TableDAO implements DAOinterface<Table>{
 		return 0;
 	}
 	
+public int updateStatus(int idTable) {
+		
+		try {
+			String query = "UPDATE `table` SET `status`=? WHERE id = ?";
+			PreparedStatement statement = conn.prepareStatement(query);
+			statement.setString(1, "serving");
+			statement.setInt(2, idTable);
+			statement.executeUpdate();
 
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	public int updateStatus(int a,int idTable) {
+		
+		try {
+			String query = "UPDATE `table` SET `status`=? WHERE id = ?";
+			PreparedStatement statement = conn.prepareStatement(query);
+			statement.setString(1, "free");
+			statement.setInt(2, idTable);
+			statement.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
 }

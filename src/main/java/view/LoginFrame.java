@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 
 import controller.ClientController;
 import models.Employee;
+
 import others.MaHoa;
 
 import java.awt.BorderLayout;
@@ -35,6 +36,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
@@ -54,9 +56,6 @@ public class LoginFrame extends JFrame {
 				try {
 					UIManager.setLookAndFeel(new FlatLightLaf());
 					UIManager.put("Button.hoverBackground", Color.decode("#5271FF"));
-					
-				
-					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -89,7 +88,10 @@ public class LoginFrame extends JFrame {
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.setBounds(65, 132, 286, 81);
 		
-		ImageIcon a = new ImageIcon(getClass().getResource("/image/Logo.png"));
+		File resourcesDirectory = new File("src/main/resources");
+		String resourcesPath = resourcesDirectory.getAbsolutePath();
+		String temp = resourcesPath+"/image/Logo.png";
+		ImageIcon a = new ImageIcon(temp);
 		Image b = a.getImage().getScaledInstance(286, 81, Image.SCALE_SMOOTH);
 		
 		lblNewLabel.setIcon(new ImageIcon(b));

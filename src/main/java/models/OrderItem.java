@@ -5,14 +5,11 @@ import java.sql.SQLException;
 
 public class OrderItem implements Model{
 
-	 private int idOrder, idFoodItem, idTopping, quantity, foodPrice, toppingPrice;
-	    private String note;
-	    private FoodItem foodItem, toppingItem;
+	 	private int idOrder,  quantity;
+	    private FoodItem foodItem;
 
 	    public OrderItem() {
 	        quantity = 1;
-	        idTopping = 0;
-	        note = "";
 	    }
 
 	    public int getIdOrder() {
@@ -24,21 +21,12 @@ public class OrderItem implements Model{
 	    }
 
 	    public int getIdFoodItem() {
-	        return idFoodItem;
+	        return foodItem.getId();
 	    }
 
-	    public void setIdFoodItem(int idFoodItem) {
-	        this.idFoodItem = idFoodItem;
+	    public String getFoodName() {
+	    	return foodItem.getName();
 	    }
-
-	    public int getIdTopping() {
-	        return idTopping;
-	    }
-
-	    public void setIdTopping(int idTopping) {
-	        this.idTopping = idTopping;
-	    }
-
 	    public int getQuantity() {
 	        return quantity;
 	    }
@@ -52,28 +40,10 @@ public class OrderItem implements Model{
 	    }
 
 	    public int getFoodPrice() {
-	        return foodPrice;
+	        return foodItem.getUnitPrice();
 	    }
 
-	    public void setFoodPrice(int foodPrice) {
-	        this.foodPrice = foodPrice;
-	    }
-
-	    public int getToppingPrice() {
-	        return toppingPrice;
-	    }
-
-	    public void setToppingPrice(int toppingPrice) {
-	        this.toppingPrice = toppingPrice;
-	    }
-
-	    public String getNote() {
-	        return note;
-	    }
-
-	    public void setNote(String note) {
-	        this.note = note;
-	    }
+	  
 
 	    public FoodItem getFoodItem() {
 	        return foodItem;
@@ -81,40 +51,26 @@ public class OrderItem implements Model{
 
 	    public void setFoodItem(FoodItem foodItem) {
 	        this.foodItem = foodItem;
-	        this.idFoodItem = foodItem.getId();
 	    }
 
-	    public FoodItem getToppingItem() {
-	        return toppingItem;
-	    }
-
-	    public void setToppingItem(FoodItem toppingItem) {
-	        this.toppingItem = toppingItem;
-	        this.idTopping = toppingItem.getId();
-	    }
+	   
+	   
 
 	    public int getAmount() {
-	        return quantity * (foodPrice + toppingPrice);
+	        return quantity * (foodItem.getUnitPrice());
 	    }
 
 	    public static OrderItem getFromResultSet(ResultSet rs) throws SQLException {
 	        OrderItem oi = new OrderItem();
-	        oi.setIdFoodItem(rs.getInt("idFoodItem"));
+	        oi.foodItem.setId(rs.getInt("idFoodItem"));
 	        oi.setIdOrder(rs.getInt("idOrder"));
-	        oi.setIdTopping(rs.getInt("idTopping"));
 	        oi.setQuantity(rs.getInt("quantity"));
-	        oi.setFoodPrice(rs.getInt("foodPrice"));
-	        oi.setToppingPrice(rs.getInt("toppingPrice"));
-	        oi.setNote(rs.getNString("note"));
+	        oi.foodItem.setUnitPrice(rs.getInt("foodPrice"));
 	        return oi;
 	    }
 
 
-	@Override
-	public String toStringvn() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	@Override
 	public Object[] toRowTable() {
